@@ -27,6 +27,7 @@ class Fulltext(CkanCommand):
     summary = __doc__.split('\n')[0]
 
     def command(self):
+        '''Handles user input.'''
         self._load_config()
         print ''
 
@@ -39,8 +40,12 @@ class Fulltext(CkanCommand):
         else:
             print 'Command %s not recognized' % cmd
             
+            
 
     def init_fulltext_table(self):
+        '''Creates a new table called package_fulltext 
+        in the database or on a remote server.
+        '''
         setup()
 
 

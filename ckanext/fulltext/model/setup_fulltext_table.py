@@ -38,9 +38,12 @@ except AttributeError:
 __all__ = ['PackageFulltext', 'package_fulltext_table', 'PackageFulltextRevision',
 'fulltext_revision_table']
 
-
 package_fulltext_table  = None
+
 def setup():
+    '''
+    Creates a new fulltext table if it does not exist in the database. 
+    '''
     if package_fulltext_table is None:
         define_tables()
     
@@ -51,7 +54,7 @@ def setup():
     
 
 class PackageFulltext(domain_object.DomainObject):
-    
+    ''' Object-relational mapper class for the fulltext table.'''
     @classmethod
     def get(cls, key, default=None, attr=None):
         '''Finds a single entity in the register.'''
@@ -66,8 +69,8 @@ class PackageFulltext(domain_object.DomainObject):
  
     
 def define_tables():
+    '''Mappes the fulltext table.'''
     global package_fulltext_table
-
     package_fulltext_table = Table('package_fulltext', meta.metadata,
     Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
     Column('package_id', types.UnicodeText, ForeignKey('package.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=True),

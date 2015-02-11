@@ -51,18 +51,22 @@ from ckanext.fulltext.fulltext_api import _get_fulltext
 
 log = getLogger(__name__)
 
-'''
-
-
-'''
 
 class InforegFulltextSearch(SingletonPlugin):
+    '''Base fulltext-plugin class.''''
 
     implements(IPackageController, inherit=True)
     implements(IActions)
 
     # for IPackageController
     def before_index(self, pkg_dict):
+        '''Adds the fulltext of a package to the dict what 
+        will be given to the solr for indexing.
+        
+        @param pkg_dict: flattened dict (except for multli-valued fields such as tags) 
+                         containing all the terms which will be sent to the indexer
+        @return: modified package dict
+        '''
         
         if pkg_dict and pkg_dict.has_key('extras_full_text_search'):
             del pkg_dict['extras_full_text_search']
@@ -87,6 +91,11 @@ class InforegFulltextSearch(SingletonPlugin):
 
     # for IActions
     def get_actions(self):
+        '''Returns a dict containing the keys being the name of the logic 
+        function and the values being the functions themselves.
+        
+        @return: dict containing the logic functions
+        '''
         action_functions = get_functions()
         return action_functions
     

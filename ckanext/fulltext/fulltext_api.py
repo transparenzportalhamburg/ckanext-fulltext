@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
 import re
 
@@ -48,14 +47,16 @@ from ckanext.fulltext.model.setup_fulltext_table import setup
 log = getLogger(__name__)
 
 
-''' Metadata  fields that are not shown by default'''
+''' Extras metadata fields that are not shown by default'''
 hide_fields = [] 
-#['full_text_search', 'transformierteliefersystemmetadaten_encoded', 'store_date']
-# 'publishing_date','exact_publishing_date', entfernt, da die Portal-Extension diese benoetigt
-# Welcher Benutzer wird von der Portal-Extension verwendet?
 
 
 def get_functions():
+    '''Returns a dict containing the keys being the name of the logic 
+    function and the values being the functions themselves.
+        
+    @return: dict containing the logic functions
+    '''
     return {
             'package_show': package_show_minimal,
             'package_show_rest': package_show_rest_minimal,
@@ -71,6 +72,9 @@ def get_functions():
 
 
 def _init_hide_fields():
+    '''Reads the names of the extras metadata fields which 
+    will be not shown from the config ini file.
+    '''
     global hide_fields
     try:
         hide_fields = config.get('ckan.spatial.hide.fields').split()
@@ -100,7 +104,14 @@ def check_logged_in(context):
 
     return False
 
+
 def _del_extra_field_from_list(data_dict, delete_field=None):
+    '''Deletes metadata fields from the extras list.
+    
+    @param data_dict: dict containing extras
+    @param delete_field: name of field which will be removed
+                         (deletes hide_fields if None) 
+    '''
     if delete_field in data_dict['extras'].keys():
             del data_dict['extras'][delete_field]
             return data_dict
@@ -117,7 +128,12 @@ def _del_extra_field_from_list(data_dict, delete_field=None):
 
 
 def _del_extra_field_from_dict(data_dict, delete_field=None):
-    '''Deletes metadata fields from the extras dict'''
+    '''Deletes metadata fields from the extras dict.
+    
+    @param data_dict: dict containing extras
+    @param delete_field: name of field which will be removed
+                         (deletes hide_fields if None) 
+    '''
     if 'extras' in data_dict:
         if delete_field:
             for dict in data_dict['extras']:
@@ -136,6 +152,86 @@ def _del_extra_field_from_dict(data_dict, delete_field=None):
 
     return data_dict     
 
+
+def _contains_key(data_list, key):
+    '''Checks if a key exsists in a dictionary'''
+    for dict in data_list:
+        if(dict['key'] == key):
+            return dict['value']
+    return None
+
+
+def _get_extras_dict(extras):
+    '''Encodes basic Python dictionary objects of 
+    an extras field into JSON.'''
+    from numbers import Number
+    extras_as_dict = []
+    
+    if isinstance(extras, dict):
+        for key, value in extras.iteritems():
+            if isinstance(value, (basestring, Number)):
+                extras_as_dict.append({'key': key, 'value': value})
+            else:
+                extras_as_dict.append({'key': key, 'value': json.dumps(value, ensure_ascii=False)})
+        return extras_as_dict
+    return extras
+
+
+def _get_fulltext(package_id):
+    '''Returns the fulltext of a package.
+    
+    @param package_id: id of the package
+    '''
+    setup()
+    if package_id:
+        fulltext = Session.query(PackageFulltext) \
+                            .filter(PackageFulltext.package_id==package_id) \
+                            .first()
+        return fulltext
+    return None
+
+
+def fulltext_dict_save(fulltext_dict, old_fulltext, pkg, context):
+    '''Saves the changes of fulltext entities in the database.
+    
+    @param fulltext_dict: new fulltext dict which will be saved
+    @param old_fulltext: fulltext entity which will be deleted
+    @param pkg: package dict
+    '''
+    if fulltext_dict is None:
+        return
+    
+    model = context["model"]
+    session = context["session"]
+    id = pkg['id']
+
+    #deleted
+    if pkg['state'] == 'deleted' and old_fulltext:
+        from ckan import model
+        model.Session.delete(old_fulltext)
+        try:
+            model.repo.commit_and_remove()
+            log.info(u'Purged fulltext row with package id {}'.format(pkg['id']))
+        except IntegrityError,e:
+            log.error(u'An integrity error while purging (package id {})'.format(pkg['id']))
+
+    #new   
+    elif not old_fulltext and fulltext_dict:
+        state = 'pending' if context.get('pending') else 'active'
+        fulltext = PackageFulltext()
+        fulltext.package_id=id
+        fulltext.text=fulltext_dict
+        fulltext.save()
+        model.Session.flush()
+        
+    #modfied
+    elif old_fulltext != fulltext_dict:
+        state = 'pending' if context.get('pending') else 'active'
+        old_fulltext.text = fulltext_dict
+        old_fulltext.save()
+        model.Session.commit()
+        model.Session.flush()
+
     
 @toolkit.side_effect_free
 def package_show_rest_minimal(context, data_dict):
@@ -145,7 +241,6 @@ def package_show_rest_minimal(context, data_dict):
         fulltext = _get_fulltext(package['id'])
         if fulltext:
             package['extras']['full_text_search'] = fulltext.text 
-        
         return package
     
     minimal_package =  _del_extra_field_from_list(package)
@@ -166,9 +261,7 @@ def package_show_minimal(context, data_dict):
     :rtype: dictionary
 
     '''
-
     package = get.package_show(context, data_dict)
-    
     if check_logged_in(context):
         fulltext = _get_fulltext(package['id'])
         if fulltext:
@@ -180,18 +273,6 @@ def package_show_minimal(context, data_dict):
     
     minimal_package =  _del_extra_field_from_dict(package)
     return minimal_package
-
-
-
-def _get_fulltext(package_id):
-    setup()
-    if package_id:
-        fulltext = Session.query(PackageFulltext) \
-                            .filter(PackageFulltext.package_id==package_id) \
-                            .first()
-                            
-        return fulltext
-    return None
 
 
 @toolkit.side_effect_free
@@ -299,7 +380,6 @@ def package_search_minimal(context, data_dict):
         query cannot be changed.  CKAN always returns the matched datasets as
         dictionary objects.
     '''
-
     result_dict = get.package_search(context, data_dict)
     
     if check_logged_in(context):
@@ -311,7 +391,6 @@ def package_search_minimal(context, data_dict):
                                 }
                 result['extras'].append(fulltext_dict) 
         return result_dict
-    
     new_packages = []
     for result in result_dict['results']:
         new_package = _del_extra_field_from_dict(result)
@@ -336,7 +415,6 @@ def user_show_minimal(context, data_dict):
 
     '''
     result_dict = get.user_show(context, data_dict)
-    
     if check_logged_in(context):
         for result in result_dict['datasets']:
             fulltext = _get_fulltext(result['id'])
@@ -346,7 +424,6 @@ def user_show_minimal(context, data_dict):
                                 }
                 result['extras'].append(fulltext_dict) 
         return result_dict
-    
     new_packages = []
     for result in result_dict['datasets']:
         new_package = _del_extra_field_from_dict(result)
@@ -479,7 +556,6 @@ def package_create_minimal(context, data_dict):
     :rtype: dictionary
 
     '''
-    
     setup()
     package= ''
     fulltext = ''
@@ -490,24 +566,19 @@ def package_create_minimal(context, data_dict):
         if(contains): 
             fulltext = contains
             data_dict = _del_extra_field_from_dict(data_dict, 'full_text_search')
-            
             package = create.package_create(context, data_dict)
             old_fulltext = None
+            
             if package.has_key('id'):
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
                                     .first()
-
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
-    
             package = create.package_create(context, data_dict)
-            
     else:
-    
         package = create.package_create(context, data_dict)
       
-
     if check_logged_in(context):
         if fulltext:
             # why fulltext.text? Left it for compatibility
@@ -525,36 +596,12 @@ def package_create_minimal(context, data_dict):
     return minimal_package
 
 
-def _contains_key(data_list, key):
-    for dict in data_list:
-        if(dict['key'] == key):
-            return dict['value']
-    
-    return None
-
-
-def _get_extras_dict(extras):
-    from numbers import Number
-    extras_as_dict = []
-    
-    if isinstance(extras, dict):
-        for key, value in extras.iteritems():
-            if isinstance(value, (basestring, Number)):
-                extras_as_dict.append({'key': key, 'value': value})
-            else:
-                extras_as_dict.append({'key': key, 'value': json.dumps(value, ensure_ascii=False)})
-        
-        return extras_as_dict
-    return extras
-
-
 def package_create_rest_minimal(context, data_dict):
    
     setup()
     package= ''
     fulltext = ''
     old_fulltext = ''
-
     categories = []
 
     if all(isinstance(n, basestring) for n in data_dict['groups']):
@@ -563,7 +610,6 @@ def package_create_rest_minimal(context, data_dict):
              categories.append({'name': g})
         data_dict['groups']= categories
         
-    
     if all(isinstance(n, basestring) for n in data_dict['tags']):
         tags = []
         for tag in data_dict['tags']:
@@ -575,11 +621,8 @@ def package_create_rest_minimal(context, data_dict):
         if 'full_text_search' in data_dict['extras'].keys():
             fulltext = data_dict['extras']['full_text_search']
             data_dict = _del_extra_field_from_list(data_dict, 'full_text_search')
-    
             data_dict['extras'] = _get_extras_dict(data_dict['extras'])
-            
             package = create.package_create(context, data_dict)
-
             old_fulltext = None
             if package.has_key('id'):
                 old_fulltext = Session.query(PackageFulltext) \
@@ -595,8 +638,6 @@ def package_create_rest_minimal(context, data_dict):
         data_dict['extras'] = _get_extras_dict(data_dict['extras'])
         package = create.package_create(context, data_dict)
 
-            
-    
     if check_logged_in(context):
         fulltext = _get_fulltext(package['id'])
         if fulltext:
@@ -608,44 +649,6 @@ def package_create_rest_minimal(context, data_dict):
 
 
 
-def fulltext_dict_save(fulltext_dict, old_fulltext, pkg, context):
-    if fulltext_dict is None:
-        return
-    
-    model = context["model"]
-    session = context["session"]
-    id = pkg['id']
-
-    
-    #deleted
-    if pkg['state'] == 'deleted' and old_fulltext:
-        from ckan import model
-        model.Session.delete(old_fulltext)
-        try:
-            model.repo.commit_and_remove()
-            log.info(u'Purged fulltext row with package id {}'.format(pkg['id']))
-        except IntegrityError,e:
-            log.error(u'An integrity error while purging (package id {})'.format(pkg['id']))
-
-    #new   
-    elif not old_fulltext and fulltext_dict:
-        state = 'pending' if context.get('pending') else 'active'
-        fulltext = PackageFulltext()
-        fulltext.package_id=id
-        fulltext.text=fulltext_dict
-        fulltext.save()
-        model.Session.flush()
-        
-    #changed
-    elif old_fulltext != fulltext_dict:
-        state = 'pending' if context.get('pending') else 'active'
-        old_fulltext.text = fulltext_dict
-        old_fulltext.save()
-        model.Session.commit()
-        model.Session.flush()
-
-
-    
 
 def package_update_minimal(context, data_dict):
     '''Update a dataset (package).
@@ -671,7 +674,6 @@ def package_update_minimal(context, data_dict):
               the context, which is the default. Otherwise returns just the
               dataset id)
     :rtype: dictionary
-
     '''
     setup()
     package= ''
@@ -689,13 +691,11 @@ def package_update_minimal(context, data_dict):
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
                                     .first()
-
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
             package = update.package_update(context, data_dict)
     else:
         package = update.package_update(context, data_dict)
-        
 
     if check_logged_in(context):
         fulltext = _get_fulltext(package['id'])
@@ -713,7 +713,6 @@ def package_update_minimal(context, data_dict):
 
 def package_update_rest_minimal(context, data_dict):
     setup()
-
     package= ''
     fulltext = ''
     old_fulltext = ''
@@ -721,23 +720,19 @@ def package_update_rest_minimal(context, data_dict):
         if 'full_text_search' in data_dict['extras'].keys():
             fulltext = data_dict['extras']['full_text_search']
             data_dict = _del_extra_field_from_list(data_dict, 'full_text_search')
-            
-            
             package = update.package_update_rest(context, data_dict)
-            
             old_fulltext = None
+            
             if package.has_key('id'):
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
                                     .first()
-
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
             package = update.package_update(context, data_dict)
-
     else:
         package = update.package_update_rest(context, data_dict)
-    
+
     if check_logged_in(context):
         fulltext = _get_fulltext(package['id'])
         if fulltext:
@@ -745,16 +740,18 @@ def package_update_rest_minimal(context, data_dict):
         return package
     
     minimal_package = _del_extra_field_from_list(package)
-    
     return minimal_package
 
 
 def fulltext_delete(context, data_dict):  
-    '''Deletes Fulltext.'''
+    '''Deletes Fulltext.
+    
+    @param data_dict: dict containig the id of the package
+    '''
     setup()
    
     old_fulltext = ''
-    if package.has_key('id'):
+    if data_dict.has_key('id'):
         old_fulltext = Session.query(PackageFulltext) \
                             .filter(PackageFulltext.package_id==package['id']) \
                             .first()
