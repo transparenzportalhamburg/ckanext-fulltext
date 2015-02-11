@@ -12,7 +12,6 @@ from pylons.i18n import _
 from genshi.input import HTML
 from genshi.filters import Transformer
 from itertools import count
-import html
 from sqlalchemy.orm import class_mapper
 
 import ckan.lib.helpers as h
@@ -52,6 +51,10 @@ from ckanext.fulltext.fulltext_api import _get_fulltext
 
 log = getLogger(__name__)
 
+'''
+
+
+'''
 
 class InforegSolrSearch(SingletonPlugin):
 
@@ -73,7 +76,7 @@ class InforegSolrSearch(SingletonPlugin):
             pkg_dict['fulltext'] = fulltext[0]['value']
 
         else:
-            fulltext_dict = self._get_fulltext(pkg_dict['id'])
+            fulltext_dict = _get_fulltext(pkg_dict['id'])
             if fulltext_dict:
                 pkg_dict['fulltext'] = fulltext_dict.text
         

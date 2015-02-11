@@ -23,7 +23,8 @@ class Fulltext(CkanCommand):
     a development.ini file to be present. 
 
     '''
-
+    
+    summary = __doc__.split('\n')[0]
 
     def command(self):
         self._load_config()

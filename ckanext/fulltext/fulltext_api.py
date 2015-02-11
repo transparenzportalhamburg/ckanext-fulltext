@@ -12,7 +12,6 @@ from pylons.i18n import _
 from genshi.input import HTML
 from genshi.filters import Transformer
 from itertools import count
-import html
 from sqlalchemy.orm import class_mapper
 
 import ckan.lib.helpers as h
@@ -37,13 +36,14 @@ import ckan.logic.action.update as update
 
 from ckan.model import Session
 from ckanext.spatial.lib import save_package_extent,validate_bbox, bbox_query
-from ckanext.spatial.model.inforeg_model import setupFulltextTable as setup_model
 from ckanext.fulltext.model.setup_fulltext_table import PackageFulltext
 from ckan.model.package_extra import PackageExtra
 from ckanext.harvest.plugin import Harvest
 
 from ckanext.spatial.lib import save_package_extent,validate_bbox, bbox_query
 from ckanext.spatial.model.package_extent import setup as setup_model
+from ckanext.fulltext.model.setup_fulltext_table import setup
+
 
 log = getLogger(__name__)
 
@@ -100,7 +100,6 @@ def check_logged_in(context):
 
     return False
 
-   
 def _del_extra_field_from_list(data_dict, delete_field=None):
     if delete_field in data_dict['extras'].keys():
             del data_dict['extras'][delete_field]
@@ -153,6 +152,7 @@ def package_show_rest_minimal(context, data_dict):
     return minimal_package
 
 
+
 @toolkit.side_effect_free
 def package_show_minimal(context, data_dict):
     '''Return the metadata of a dataset (package) and its resources.
@@ -184,7 +184,6 @@ def package_show_minimal(context, data_dict):
 
 
 def _get_fulltext(package_id):
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
     if package_id:
         fulltext = Session.query(PackageFulltext) \
@@ -481,7 +480,6 @@ def package_create_minimal(context, data_dict):
 
     '''
     
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
     package= ''
     fulltext = ''
@@ -552,7 +550,6 @@ def _get_extras_dict(extras):
 
 def package_create_rest_minimal(context, data_dict):
    
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
     package= ''
     fulltext = ''
@@ -676,7 +673,6 @@ def package_update_minimal(context, data_dict):
     :rtype: dictionary
 
     '''
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
     package= ''
     fulltext = ''
@@ -716,7 +712,6 @@ def package_update_minimal(context, data_dict):
 
 
 def package_update_rest_minimal(context, data_dict):
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
 
     package= ''
@@ -756,7 +751,6 @@ def package_update_rest_minimal(context, data_dict):
 
 def fulltext_delete(context, data_dict):  
     '''Deletes Fulltext.'''
-    from ckanext.spatial.model.inforeg_model.setupFulltextTable import setup
     setup()
    
     old_fulltext = ''
