@@ -56,7 +56,7 @@ log = getLogger(__name__)
 
 '''
 
-class InforegSolrSearch(SingletonPlugin):
+class InforegFulltextSearch(SingletonPlugin):
 
     implements(IPackageController, inherit=True)
     implements(IActions)

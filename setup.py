@@ -26,7 +26,7 @@ setup(
 	"""
     
     [ckan.plugins]
-    inforeg_solr_search=ckanext.fulltext.fulltext_index:InforegSolrSearch
+    inforeg_solr_search=ckanext.fulltext.plugin:InforegFulltextSearch
  
 	[paste.paster_command]
 	fulltext=ckanext.fulltext.commands.fulltext:Fulltext
