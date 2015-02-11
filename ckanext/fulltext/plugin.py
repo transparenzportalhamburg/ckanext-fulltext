@@ -53,7 +53,7 @@ log = getLogger(__name__)
 
 
 class InforegFulltextSearch(SingletonPlugin):
-    '''Base fulltext-plugin class.''''
+    '''Base fulltext-plugin class.'''
 
     implements(IPackageController, inherit=True)
     implements(IActions)
