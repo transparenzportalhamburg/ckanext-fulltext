@@ -77,7 +77,7 @@ def _init_hide_fields():
     '''
     global hide_fields
     try:
-        hide_fields = config.get('ckan.spatial.hide.fields').split()
+        hide_fields = config.get('ckan.fulltext.hide.fields').split()
     except Exception, e:
         hide_fields = []    
 
@@ -758,9 +758,3 @@ def fulltext_delete(context, data_dict):
 
         fulltext_dict_save(None, old_fulltext, data_dict, context)    
     return true
-    
-
-
-
-
-
