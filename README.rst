@@ -9,8 +9,10 @@ to do a full text search and then display the matches in CKAN.
 The full text field enables the user to find datasets that contain text he or she is looking for, without the text being 
 part of one of the CKAN fields. That means the full text will be stored separate and apart from other CKAN package data in 
 Solr as well as in the PostgreSQL database.
+
 |
 |
+
 Plugin Installation
 ===================
 |
