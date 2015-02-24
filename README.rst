@@ -42,6 +42,29 @@ Plugin Installation
 API usage
 =========
 |
+Once you've downloaded a full text online resource that you want to search in, create a package
+with a new metadata field `full_text_search` to store the full text or add this field to an 
+exististing package by calling package_update.::
+    package_entity = {
+       'name': package_name,
+       'url': package_url,
+       'notes': package_long_description,
+       'extras': [{'key':'full_text_search', 'value':'full text online resource'}]
+    }
+ 
+After rebuilding the search index you should get results from your full-text searches.::
+   paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
+   http://test.ckan.net/api/3/action/package_search?q=full
+
+|
+
+The following CKAN API functions will return complete packages that means the full text of each package will 
+be added to the metadata field 'full_text_search'.::
+   package_show
+   user_show
+   full_text_search
+   current_package_list_with_resources
+
 |
 |
 
@@ -50,11 +73,11 @@ Hide extras fields
 |
 Hidden fields are fields that are used for e.g. administrative purposes, but not shown to the user.
 
-You can set an option in the CKAN config file to specify extras fields which are not
-visible (GUI and API functions) for any user except sysadmin. By default, the field ''full_text_search'' will 
-also be not shown::     
+You can set an option in the CKAN config file (hmbtg.ini) to specify extras fields and standard CKAN fields which are not
+visible (GUI and API functions) for any user except sysadmin::     
 
-     ckan.fulltext.hide.fields = extras_field1 extras_field2 ...
+     hide.extras.fields = full_text_search extras_field1 extras_field2 ...
+     hide.main.fields = maintainer_email author_email ...
 
 |
 |
