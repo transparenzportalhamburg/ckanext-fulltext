@@ -42,14 +42,15 @@ from ckanext.harvest.plugin import Harvest
 from ckanext.spatial.lib import save_package_extent,validate_bbox, bbox_query
 from ckanext.spatial.model.package_extent import setup as setup_model
 from ckanext.fulltext.model.setup_fulltext_table import setup
+from ckanext.spatial.inforeg_harvester.utils.hmbtg_config import getConfValue
 
 
 log = getLogger(__name__)
 
 
 ''' Extras metadata fields that are not shown by default'''
-hide_fields = [] 
-
+hide_extras_fields = [] 
+hide_main_fields = [] 
 
 def get_functions():
     '''Returns a dict containing the keys being the name of the logic 
@@ -72,16 +73,22 @@ def get_functions():
 
 
 def _init_hide_fields():
-    '''Reads the names of the extras metadata fields which 
-    will be not shown from the config ini file.
+    '''Reads the names of the metadata fields which 
+    will be not shown from the config hmbtg.ini file.
     '''
-    global hide_fields
+    global hide_extras_fields
+    global hide_main_fields
     try:
-        hide_fields = config.get('ckan.fulltext.hide.fields').split()
+        hide_extras_fields = getConfValue('hide.extras.fields').split()
     except Exception, e:
-        hide_fields = []    
-
-
+        hide_extras_fields = []    
+    
+    try:
+        hide_main_fields = getConfValue('hide.main.fields').split()
+    except Exception, e:
+        hide_main_fields = []    
+        
+    
 
 def check_logged_in(context):
     ''' Check if user is logged in.
@@ -110,7 +117,7 @@ def _del_extra_field_from_list(data_dict, delete_field=None):
     
     @param data_dict: dict containing extras
     @param delete_field: name of field which will be removed
-                         (deletes hide_fields if None) 
+                         (deletes hide_extras_fields if None) 
     '''
     if delete_field in data_dict['extras'].keys():
             del data_dict['extras'][delete_field]
@@ -118,7 +125,7 @@ def _del_extra_field_from_list(data_dict, delete_field=None):
     
     _init_hide_fields()     
     delete_key = []
-    for field in hide_fields:
+    for field in hide_extras_fields:
         if field in data_dict['extras'].keys():
             delete_key.append(field)
      
@@ -132,7 +139,7 @@ def _del_extra_field_from_dict(data_dict, delete_field=None):
     
     @param data_dict: dict containing extras
     @param delete_field: name of field which will be removed
-                         (deletes hide_fields if None) 
+                         (deletes hide_extras_fields if None) 
     '''
     if 'extras' in data_dict:
         if delete_field:
@@ -144,12 +151,22 @@ def _del_extra_field_from_dict(data_dict, delete_field=None):
         _init_hide_fields()
         delete_dicts = []
         for dict in data_dict['extras']:
-            if dict['key'] in hide_fields:
+            if dict['key'] in hide_extras_fields:
                 delete_dicts.append(dict)
         
         for del_dict in delete_dicts: 
             (data_dict['extras']).remove(del_dict)
 
+    return data_dict     
+
+
+
+def _del_main_field_from_dict(data_dict):
+    '''Deletes metadata fields from the package dict.'''
+    _init_hide_fields()
+    for field in hide_main_fields:
+        if field in data_dict:
+            del data_dict[field]
     return data_dict     
 
 
@@ -244,6 +261,7 @@ def package_show_rest_minimal(context, data_dict):
         return package
     
     minimal_package =  _del_extra_field_from_list(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -262,6 +280,7 @@ def package_show_minimal(context, data_dict):
 
     '''
     package = get.package_show(context, data_dict)
+    
     if check_logged_in(context):
         fulltext = _get_fulltext(package['id'])
         if fulltext:
@@ -272,6 +291,7 @@ def package_show_minimal(context, data_dict):
         return package
     
     minimal_package =  _del_extra_field_from_dict(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -394,6 +414,7 @@ def package_search_minimal(context, data_dict):
     new_packages = []
     for result in result_dict['results']:
         new_package = _del_extra_field_from_dict(result)
+        new_package = _del_main_field_from_dict(new_package)
         new_packages.append(new_package)
     result_dict['results'] = new_packages
     
@@ -427,6 +448,7 @@ def user_show_minimal(context, data_dict):
     new_packages = []
     for result in result_dict['datasets']:
         new_package = _del_extra_field_from_dict(result)
+        new_package = _del_main_field_from_dict(new_package)
         new_packages.append(new_package)
     result_dict['datasets'] = new_packages
     return result_dict
@@ -467,6 +489,7 @@ def current_package_list_with_resources_minimal(context, data_dict):
     new_packages = []
     for result in results:
         new_package = _del_extra_field_from_dict(result)
+        new_package = _del_main_field_from_dict(new_package)
         new_packages.append(new_package)
 
     return new_packages
@@ -593,6 +616,7 @@ def package_create_minimal(context, data_dict):
         return package
     
     minimal_package = _del_extra_field_from_dict(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -645,6 +669,7 @@ def package_create_rest_minimal(context, data_dict):
         return package
     
     minimal_package = _del_extra_field_from_list(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -707,6 +732,7 @@ def package_update_minimal(context, data_dict):
         return package
     
     minimal_package = _del_extra_field_from_dict(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -740,6 +766,7 @@ def package_update_rest_minimal(context, data_dict):
         return package
     
     minimal_package = _del_extra_field_from_list(package)
+    minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
 
 
@@ -758,3 +785,9 @@ def fulltext_delete(context, data_dict):
 
         fulltext_dict_save(None, old_fulltext, data_dict, context)    
     return true
+    
+
+
+
+
+
