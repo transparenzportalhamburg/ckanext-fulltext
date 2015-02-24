@@ -44,22 +44,25 @@ API usage
 |
 Once you've downloaded a full text online resource that you want to search in, create a package
 with a new metadata field `full_text_search` to store the full text or add this field to an 
-exististing package by calling package_update.::
+exististing package by calling package_update::
     package_entity = {
        'name': package_name,
        'url': package_url,
        'notes': package_long_description,
        'extras': [{'key':'full_text_search', 'value':'full text online resource'}]
     }
+
+|
  
-After rebuilding the search index you should get results from your full-text searches.::
+After rebuilding the search index you should get results from your full-text searches::
    paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
+   
    http://test.ckan.net/api/3/action/package_search?q=full
 
 |
 
 The following CKAN API functions will return complete packages that means the full text of each package will 
-be added to the metadata field 'full_text_search'.::
+be added to the metadata field 'full_text_search'::
    package_show
    user_show
    full_text_search
