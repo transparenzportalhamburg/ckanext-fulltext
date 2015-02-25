@@ -56,6 +56,7 @@ exististing package by calling package_update::
  
 After rebuilding the search index you should get results from your full-text searches::
    paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
+
    http://test.ckan.net/api/3/action/package_search?q=full
 
 |
