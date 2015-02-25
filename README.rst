@@ -65,7 +65,7 @@ The following CKAN API functions will return complete packages that means the fu
 be added to the metadata field 'full_text_search'::
    package_show
    user_show
-   full_text_search
+   package_search
    current_package_list_with_resources
 
 |
