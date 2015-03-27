@@ -42,6 +42,34 @@ Plugin Installation
 API usage
 =========
 |
+
+Once you've downloaded a full text online resource that you want to search in, create a package
+with a new metadata field `full_text_search` to store the full text or add this field to an 
+exististing package by calling package_update::
+    package_entity = {
+       'name': package_name,
+       'url': package_url,
+       'notes': package_long_description,
+       'extras': [{'key':'full_text_search', 'value':'full text online resource'}]
+    }
+
+|
+ 
+After rebuilding the search index you should get results from your full-text searches::
+   paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
+
+   http://test.ckan.net/api/3/action/package_search?q=full
+
+|
+
+The following CKAN API functions will return complete packages that means the full text of each package will 
+be added to the metadata field 'full_text_search'::
+   package_show
+   user_show
+   package_search
+   current_package_list_with_resources
+
+>>>>>>> 24c3399c24e2debd659ceadbb64ea88b81702996
 |
 |
 
@@ -61,3 +89,26 @@ also be not shown::
 |
 License
 =======
+=======
+You can set an option in the CKAN config file (hmbtg.ini) to specify extras fields and standard CKAN fields which are not
+visible (GUI and API functions) for any user except sysadmin::     
+
+     hide.extras.fields = full_text_search extras_field1 extras_field2 ...
+     hide.main.fields = maintainer_email author_email ...
+
+|
+|
+
+Copying and License
+===================
+|
+This material is copyright (c) 2015  Fachliche Leitstelle Transparenzportal, Hamburg, Germany.
+
+|
+
+It is open and licensed under the GNU Affero General Public License (AGPL) v3.0 whose full text may be found at:
+http://www.fsf.org/licensing/licenses/agpl-3.0.html
+
+|
+|
+>>>>>>> 24c3399c24e2debd659ceadbb64ea88b81702996
