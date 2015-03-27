@@ -39,7 +39,7 @@ from ckan.logic import get_action, ValidationError
 
 from ckan.model import Session
 from ckanext.spatial.lib import save_package_extent,validate_bbox, bbox_query
-from ckanext.spatial.model.inforeg_model import setupFulltextTable as setup_model
+
 from ckanext.fulltext.model.setup_fulltext_table import PackageFulltext
 from ckan.model.package_extra import PackageExtra
 from ckanext.harvest.plugin import Harvest
