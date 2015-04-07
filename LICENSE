@@ -15,5 +15,5 @@ http://www.fsf.org/licensing/licenses/agpl-3.0.html
 
 INSTALL REQUIREMENTS: 
 - Solr>=3.5
-
-
+- Apache Tika
+- tika-python
