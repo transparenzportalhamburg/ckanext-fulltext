@@ -10,6 +10,7 @@ The full text field enables the user to find datasets that contain text he or sh
 part of one of the CKAN fields. That means the full text will be stored separate and apart from other CKAN package data in 
 Solr as well as in the PostgreSQL database.
 
+Additionaly you can parse the fulltext of documents using a JCC-Wrapper for Apache Tika.
 |
 |
 
@@ -39,6 +40,39 @@ Plugin Installation
 |
 |
 |
+Tika-Wrapper Installation (for Ubuntu)
+======================================
+
+In order to use the tikaparser you have to install jcc (http://lucene.apache.org/jcc/).
+JCC requieres a recent  cpp compliler, Java JDK 1.7+. 
+
+If you dont have the above installed just do:
+ sudo apt-get update
+ sudo apt-get install build-essential
+ sudo apt-get install openjdk-7-jdk
+
+After that you should be able to install jcc:
+ pip install jcc
+
+Now install the tikaparser:
+ cd /path/to/ckanext-fulltext/ckanext/fulltext/parser
+ python setup.py build
+ python setup.py install
+ 
+
+Parse Fulltxt with Tika
+=======================
+
+Parsing the fulltext is easy:
+
+ from tikaparser import TikaWrapperSingleton
+
+ tika_parser = TikaWrapperSingleton()
+ fulltext = tika_parser.parse_with_tika('path_to_local_file_or_url')
+
+For advanced configuration (proxy, max_heap of the JVM) check the docs of ckanext/fulltext/tikaparser.py.
+
+
 API usage
 =========
 |
@@ -54,7 +88,7 @@ exististing package by calling package_update::
     }
 
 |
- 
+
 After rebuilding the search index you should get results from your full-text searches::
    paster --plugin=ckan search-index rebuild --config=/etc/ckan/default/development.ini
 
