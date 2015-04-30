@@ -28,7 +28,7 @@ Additionaly you can parse the fulltext of documents using a [JCC](https://lucene
 		paster --plugin=ckanext-fulltext fulltext init_fulltext_table --config=/etc/ckan/default/development.ini
 
 
-## Tika-Wrapper Installation (for Ubuntu) ## 
+## Tika-Wrapper Installation (for Ubuntu) 
 In order to use the tikaparser you have to install jcc (http://lucene.apache.org/jcc/).  
 JCC requieres a recent  cpp compliler, Java JDK 1.7+. 
 
