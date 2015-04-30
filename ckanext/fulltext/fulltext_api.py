@@ -42,7 +42,8 @@ from ckanext.harvest.plugin import Harvest
 from ckanext.spatial.lib import save_package_extent,validate_bbox, bbox_query
 from ckanext.spatial.model.package_extent import setup as setup_model
 from ckanext.fulltext.model.setup_fulltext_table import setup
-from ckanext.spatial.inforeg_harvester.utils.hmbtg_config import getConfValue
+
+from hmbtg_config import getConfValue
 
 
 log = getLogger(__name__)
