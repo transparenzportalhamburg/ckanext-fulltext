@@ -95,7 +95,7 @@ You can set an option in the CKAN config file (hmbtg.ini) to specify extras fiel
 	hide.main.fields = maintainer_email author_email ...
 
 
-##Parse Fulltext with Tika
+## Parse Fulltext with Tika
 
 
 Parsing the fulltext is easy:
