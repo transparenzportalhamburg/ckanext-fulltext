@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages
-import sys, os
 
-version = '0.1'
+version = '3.7'
 
 setup(
 	name='ckanext-fulltext',
@@ -27,10 +26,7 @@ setup(
     
     [ckan.plugins]
     inforeg_solr_search=ckanext.fulltext.plugin:InforegFulltextSearch
- 
-	[paste.paster_command]
-	fulltext=ckanext.fulltext.commands.fulltext:Fulltext
-
+    fulltext_commands=ckanext.fulltext.commands.fulltext:FulltextCommands
 	""",
 )
 

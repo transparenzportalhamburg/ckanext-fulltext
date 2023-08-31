@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+	<link rel="stylesheet" href="conf/styles/defaults/styles.css" />
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<title>Drucksache</title>
+	<meta name="description" content="ALLRIS net Version 3.9.4SP1 (210504m)" />
+	<meta name="language" content="de" />
+	<meta name="keywords" content="Ratsinformationssystem, Ratsinfo, Sitzungsdienst, ALLRIS" />
+	<meta name="classification" content="Government" />
+	<meta name="rating" content="Safe For Kids" />
+	<link rel="shortcut icon" type="image/x-icon" href="images/ALLRIS.ico" />
+	<link rel="stylesheet" href="conf/_styles.css" />
+	<link rel="stylesheet" href="conf/opt/alert/_styles.css" />
+	<script type="text/javascript" src="opt/scripting/alert.js"></script>
+	<meta name="objectID" content="1001285" />
+	<meta name="infoID" content="33.3940003.0" />
+</head><body ><div>
+<div id="allriscontainer" class="vo020">
+<div class="borderframe"><div class="mainframe"><div class="header"></div><div id="risleft"><div id="rislogo"></div>
+<div id="riswrap"><div id="rismenu"><ul id="menu">
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=1" title="Reduzieren">Bürgerinfo</a></strong></li>
+<li>
+	<ul>
+	<li><a href="allris.net.asp" title="Startseite">Home</a></li>
+	<li><a href="pa021.asp" title="Bezirksversammlung">Bezirksversammlung</a></li>
+	<li><a href="au010.asp?T1=Aussch%FCsse&amp;AU=Ausschuss&amp;SORTVON=1&amp;SORTBIS=400">Ausschüsse</a></li>
+	<li><a href="fr010.asp?SELECT=1" title="Fraktionen">Fraktionen</a></li>
+	</ul>
+</li>
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=2" title="Reduzieren">Sitzungen</a></strong></li>
+<li>
+	<ul>
+	<li><a href="si010_e.asp" title="Sitzungstermine aller Gremien">Kalender</a></li>
+	<li><a href="si018_a.asp" title="Recherche nach wählbaren Suchkriterien">Übersicht</a></li>
+	<li><a href="si016.asp" title="Niederschriften zu Sitzungen">Niederschriften</a></li>
+	</ul>
+</li>
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=3" title="Reduzieren">Drucksachen</a></strong></li>
+<li>
+	<ul>
+	<li><a href="vo040.asp" title="Recherche nach wählbaren Suchkriterien">Übersicht ab 05-2013</a></li>
+	<li><a href="filelist.asp?id=11" title="Übersicht bis 04-2013">Übersicht bis 04-2013</a></li>
+	</ul>
+</li>
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=4" title="Reduzieren">Recherche</a></strong></li>
+<li>
+	<ul>
+	<li><a href="yw040.asp" title="Volltextsuche in Vorlagen, Sitzungen und Beschlüssen">Textrecherche</a></li>
+	<li><a href="kp040.asp">Sitzungsteilnehmende</a></li>
+	<li><a href="filelist.asp?id=1" title="Rechtsgrundlagen">Rechtsgrundlagen</a></li>
+	</ul>
+</li>
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=6" title="Reduzieren">Kontakt</a></strong></li>
+<li>
+	<ul>
+	<li><a href="impressum.asp" title="Impressum">Impressum</a></li>
+	</ul>
+</li>
+<li><strong><a href="/bi/vo020.asp?VOLFDNR=1001285&amp;toggleMenu=7" title="Reduzieren">Hilfe</a></strong></li>
+<li>
+	<ul>
+	<li><a href="legende.asp" title="Legende">Legende</a></li>
+	</ul>
+</li>
+</ul>
+</div></div>
+</div>
+<div id="risright"><div id="rishead"><p class="topHeadline">Bezirksversammlung Harburg</p></div>
+<div id="risnavi"><ul id="navi_right">
+<li><!-- BOOKMARK_LINK --><a href="vo020.asp?VOLFDNR=1001285" title="Lesezeichen für Drucksache - 20-0235" target="_self"><img src="images/bookmark.gif" alt="Lesezeichen für Drucksache - 20-0235"  /></a><!-- BOOKMARK_LINK --></li>
+<li><a href="mailto:?subject=Ratsinformation:%20Drucksache%20-%2020-0235%20-%20Antrag%20der%20Abgeordneten%20Dr.%20Gudrun%20Schittek%20und%20GR%C3%9CNE-Fraktion%20betr.%20Soll%20der%20Elbdeich%20in%20Cranz%20und%20Neuenfelde%20erh%C3%B6ht%20werden%20und%20wenn%20ja,%20wie%20soll%20das%20umgesetzt%20werden%3F&amp;body=Online-Version%20der%20Seite:%20http://sitzungsdienst-harburg.hamburg.de/bi/vo020.asp%3FVOLFDNR=1001285%0D%0A" title="Seite versenden"><img src="images/email_gross.gif" alt="Seite versenden"  /></a></li>
+<li><form action="vo020.asp?VOLFDNR=1001285" target="_blank" method="post" title="Druckansicht für diese Seite"><input type="image" src="images/print.gif" alt="Druckansicht für diese Seite"  /><input type="hidden" name="VOLFDNR" value="1001285"  /><input type="hidden" name="selfAction" value="Druckansicht für diese Seite"  /></form></li>
+</ul>
+</div>
+<div id="risname"><h1>Drucksache - 20-0235&nbsp;&nbsp;</h1></div>
+<div id="risprop"></div>
+<div id="rismain"><div id="posOuterLocator"></div><table class="risdeco" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td><img src="images/deco/clip/nw.gif" alt=""  /></td>
+		<td width="100%" style="background: URL(images/deco/clip/n.gif) repeat-x">&nbsp;</td>
+		<td><img src="images/deco/clip/ne.gif" alt=""  /></td>
+	</tr>
+	<tr>
+		<td style="background: URL(images/deco/clip/w.gif) repeat-y">&nbsp;</td>
+		<td bgcolor="white"><table class="tk1" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td class="ko1" valign="top"><table class="tk1" cellspacing="0" cellpadding="3" border="0">
+	<tr>
+		<td class="kb1">Betreff:</td>
+		<td class="text1" colspan="3">
+<script language="Javascript" type="text/javascript"><!--
+//<![CDATA[
+	function checkClickResult(id, clicked, value) {
+		if (id == 8) {
+			if (clicked == 1) {
+				document.delVerSigForm.submit();
+			} else {
+				resetDelVerSigForm();
+			}
+		}
+	}
+
+
+//]]>
+--></script>
+Antrag der Abgeordneten Dr. Gudrun Schittek und GRÜNE-Fraktion<br  />betr. Soll der Elbdeich in Cranz und Neuenfelde erhöht werden und wenn ja, wie soll das umgesetzt werden?</td>
+	</tr>
+	<tr><td class="kb1">Status:</td><td class="text3">öffentlich</td><td class="kb1">Drucksache-Art:</td><td class="text4">Antrag</td></tr>
+
+<tr><td class="kb1">Verfasser:</td><td class="text4">GRÜNE-Fraktion</td></tr>
+<tr>
+<td class="kb1">Federführend:</td><td class="text4">Interner Service</td>
+<td class="kb1">&nbsp;</td><td class="text4">&nbsp;</td>
+</tr>
+
+
+	<tr>
+		<td class="kb1" colspan="4">Beratungsfolge:</td>
+	</tr>
+	<tr>
+		<td valign="top" colspan="4">
+			<table cellspacing="0" cellpadding="3" border="0">
+				<tr>
+					<td><img src="images/einpix.gif" alt="" width="1" height="1" border="0"  /></td>
+					<td colspan="6"><img src="images/einpix.gif" alt="" width="1" height="1" border="0"  /></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text1" colspan="3">Hauptausschuss</td>
+					<td class="text1" colspan="3" nowrap="nowrap"></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">11.11.2014&nbsp;</td>
+<td><form action="to010.asp?topSelected=1006063" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1000419"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1000419">Sitzung des Hauptausschusses</a></td>
+					<td class="text3">(offen)&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1006063"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text1" colspan="3">Regionalausschuss Süderelbe</td>
+					<td class="text1" colspan="3" nowrap="nowrap"></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">21.10.2015&nbsp;</td>
+<td><form action="to010.asp?topSelected=1009406" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1000506"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1000506">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">(offen)&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1009406"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text1" colspan="3">Regionalausschuss Süderelbe</td>
+					<td class="text1" colspan="3" nowrap="nowrap"></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">18.04.2018&nbsp;</td>
+<td><form action="to010.asp?topSelected=1020692" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001169"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001169">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">vertagt / verbleibt&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1020692"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">24.10.2018&nbsp;</td>
+<td><form action="to010.asp?topSelected=1022322" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001181"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001181">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">vertagt / verbleibt&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1022322"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">17.04.2019&nbsp;</td>
+<td><form action="to010.asp?topSelected=1025023" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001405"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001405">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">vertagt / verbleibt&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1025023"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">20.11.2019&nbsp;</td>
+<td><form action="to010.asp?topSelected=1026793" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001557"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001557">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">(offen)&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1026793"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">18.03.2020&nbsp;</td>
+<td><form action="to010.asp?topSelected=1028087" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001621"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001621">ABGESAGT - Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">&nbsp;</td>
+					<td>&nbsp;</td>
+<td>&nbsp;</td>
+				</tr>
+				<tr valign="top" class="zl12">
+					<td bgcolor="#ffffff" title="Erledigt"></td>
+					<td class="text2">23.09.2020&nbsp;</td>
+<td><form action="to010.asp?topSelected=1028963" method="post" style="margin:0"><input type="hidden" name="SILFDNR" value="1001625"  /><input type="submit" class="il1_to" value="TO" title="Tagesordnung"  /></form></td>
+<td><a href="to010.asp?SILFDNR=1001625">Sitzung des Regionalausschusses Süderelbe</a></td>
+					<td class="text3">zurückgezogen / erledigt&nbsp;</td>
+					<td>&nbsp;</td>
+<td><form action="to020.asp" method="post" style="margin:0"><input type="hidden" name="TOLFDNR" value="1028963"  /><input type="submit" class="il1_naz" value="PA" title="Auszug"  /></form></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+<tr><td><img src="images/einpix.gif" width="1" height="1" alt="" border="0"  /></td><td width="45%"><img src="images/einpix.gif" width="1" height="1" alt="" border="0"  /></td><td><img src="images/einpix.gif" width="1" height="1" alt="" border="0"  /></td><td width="45%"><img src="images/einpix.gif" width="1" height="1" alt="" border="0"  /></td></tr>
+</table>
+</td>
+		<td class="ko2"></td>
+		<td class="me1">
+			<table class="tk1" cellspacing="0" cellpadding="0" border="0">
+				<tr><td><img src="images/einpix.gif" alt="" width="165" height="1" border="0"  /></td></tr>
+				<tr>
+					<td class="me1"> <form action="do027.asp" method="post" style="margin:0" target="_blank"><input type="hidden" name="DOLFDNR" value="1013772"  /><input type="hidden" name="options" value="64"  /><input type="hidden" name="annots" value="1"  /><input type="submit" class="il2_p" value="Drucksache" title="Drucksache (Öffnet PDF-Datei in neuem Fenster)"  /></form> <form action="vo021.asp" method="post" style="margin:0"><input type="hidden" name="VOLFDNR" value="1001285"  /><input type="submit" class="il2_s" value="Beschl&uuml;sse" title="Beschl&uuml;sse"  /></form> 
+					</td>				</tr>
+				<tr>
+					<td class="me1">						<br /><a href="#allrisSV">Sachverhalt</a>						<br /><a href="#allrisBV">Beschlussvorschlag</a>					</td>				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<hr  />
+<!-- ### SV1013773.rtf -->
+<a name="allrisSV"></a>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><meta http-equiv="Content-Style-Type" content="text/css" /><meta name="generator" content="Aspose.Words for .NET 19.1" /><title></title></head><body><div><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:11pt"><span style="font-family:Calibri; font-weight:bold">Sachverhalt:</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Der Hochwasserschutzbericht des Senats DS 20/5561 von 2012 legt für Hamburg fest, das die Erddeiche in den nächsten Jahren um 80 cm erhöht werden sollen. In den 80 cm ist ein Klimazuschlag von 50 cm enthalten, weil mit dem Anstieg der Meeresspiegels durch zukünftige Klimaveränderungen und mit häuf</span><span style="font-family:Calibri">i</span><span style="font-family:Calibri">geren Sturmfluten zu rechnen ist. Außerdem ist ein &#x201E;Metropolzuschlag&#x201C; enthalten, weil in Hamburg durch die hohe Bevölkerungsdichte und das hohe Schadenspotential besonders viele Menschen betroffen w</span><span style="font-family:Calibri">ä</span><span style="font-family:Calibri">ren und Wirtschaftsgüter zu schützen sind.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Modellrechnungen der Bundesanstalt für Wasserbau ergeben einen zukünftigen Bemessungswasse</span><span style="font-family:Calibri">r</span><span style="font-family:Calibri">stand bei St. Pauli von 8.10 m, weiter elbaufwärts höher. Der Cranzer und Neuenfelder Hauptdeich h</span><span style="font-family:Calibri">a</span><span style="font-family:Calibri">ben bereits heute eine Höhe von 8.50m, das Estesperrwerk eine Höhe von 9.50m. Laut Information von HPA sollen diese Deiche bis 2018 überplant werden.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Bei einem Meter Erhöhung würde sich der Deichfuß um 6 m verbreitern. Das Vordeichgebiet ist Natu</span><span style="font-family:Calibri">r</span><span style="font-family:Calibri">schutzgebiet. Es würden wertvolle Auwälder und Röhrichte verloren gehen. Wenn der Deichfuß landseitig verbreitert würde, müssten die Straßen Cranzer Hauptdeich und Neuenfelder Hauptdeich verlegt werden. Das hätte gravierende Folgen für die Wohnbebauung in Neuenfelde und Cranz, das Gewerbegebiet Palm und für die Pella Sietas Werft. Die Entwässerungsgräben müssten ebenfalls verlegt werden.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Außerdem stellt sich die Frage, welchen Sinn eine Deicherhöhung in Hamburg hat, wenn im angrenze</span><span style="font-family:Calibri">n</span><span style="font-family:Calibri">den Niedersachsen bei niedrigeren Deichen im Falle einer Sturmflut das Wasser übertritt.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Wäre es nicht besser, an der Elbe Rückdeichungen vorzunehmen und Polder anzulegen, um einen z</span><span style="font-family:Calibri">u</span><span style="font-family:Calibri">kunftssicheren Hochwasserschutz zu schaffen?</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; widows:0; orphans:0; font-size:11pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:11pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p></div></body></html><!-- ### BV1013774.rtf -->
+<a name="allrisBV"></a>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><meta http-equiv="Content-Style-Type" content="text/css" /><meta name="generator" content="Aspose.Words for .NET 19.1" /><title></title></head><body> <hr /><div><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:11pt"><span style="font-family:Calibri; font-weight:bold">Petitum/Beschluss:</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; font-weight:bold">Die Bezirksversammlung möge beschließen:</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; font-weight:bold; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Der Vorsitzende der Bezirksversammlung wird gebeten, einen Vertreter der zuständigen Fachbehörden im Regionalausschuss Süderelbe einzuladen um zu der oben ausgeführten Problematik Stellung zu nehmen.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; font-weight:bold">Antrag der Abgeordneten Dr. Gudrun Schittek und GRÜNE Fraktion</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Harburg, 06.11.2014</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Britta Herrmann</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">Grüne-Fraktionsvorsitzende</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:10pt"><span style="font-family:Calibri">f.d.R.</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; widows:0; orphans:0; font-size:11pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p><p style="margin-top:0pt; margin-bottom:10pt; line-height:115%; font-size:11pt"><span style="font-family:Calibri; -aw-import:ignore">&#xa0;</span></p></div></body></html></td>
+<td style="background: URL(images/deco/clip/e.gif) repeat-y">&nbsp;</td>
+	</tr>
+	<tr>
+		<td><img src="images/deco/clip/sw.gif" alt=""  /></td>
+		<td width="100%" style="background: URL(images/deco/clip/s.gif) repeat-x">&nbsp;</td>
+		<td><img src="images/deco/clip/se.gif" alt=""  /></td>
+	</tr>
+</table>
+</div>
+<div id="risfoot"><div id="foot_right"><p></p></div>
+<div id="foot_center" ><p><a href="" target="_blank" title=""></a></p></div><div id="foot_left" ><p><a href="" target="_blank" title=""></a></p></div></div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

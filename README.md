@@ -101,9 +101,9 @@ You can set an option in the CKAN config file (hmbtg.ini) to specify extras fiel
 Parsing the fulltext is easy:
 
 ```python
- from ckanext.fulltext.parser.tikaparser import Tika_Wrapper_Singleton
+ from tikaparser import TikaWrapperSingleton
 
- tika_parser = Tika_Wrapper_Singleton()
+ tika_parser = TikaWrapperSingleton()
  fulltext = tika_parser.parse_with_tika('path_to_local_file_or_url')
 ```
 

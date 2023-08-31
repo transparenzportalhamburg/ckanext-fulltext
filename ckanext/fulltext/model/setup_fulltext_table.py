@@ -1,34 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import vdm.sqlalchemy
-import vdm.sqlalchemy.stateful
-from sqlalchemy import orm, types, Column, Table, ForeignKey
-from sqlalchemy.orm import backref, relation
+import sqlalchemy
+
+from sqlalchemy import types, Column, Table, ForeignKey
+from sqlalchemy.orm import  relation
 from ckan import model
 
-from ckan.lib.search.common import SearchIndexError, make_connection
 from ckan.model import meta
 from ckan.model.meta import mapper
-from ckan.model import core
-import ckan.model.package as _package
-from ckan.model.package import Package
-import ckan.model.extension
+from ckan.model.resource import Resource
 from ckan.model import domain_object
 import ckan.model.types as _types
-import ckan.lib.dictization
-import solr
-import socket
-import ckan.model.activity
-from ckan.model import extension 
-from paste.deploy.converters import asbool
 
-from pylons import config
-
-import datetime
-from sqlalchemy.orm import class_mapper
-import sqlalchemy
-from pylons import config
 
 try:
     RowProxy = sqlalchemy.engine.result.RowProxy
@@ -71,10 +55,12 @@ class PackageFulltext(domain_object.DomainObject):
 def define_tables():
     '''Mappes the fulltext table.'''
     global package_fulltext_table
-    package_fulltext_table = Table('package_fulltext', meta.metadata,
+    package_fulltext_table = Table('resource_fulltext', meta.metadata,
     Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
+    Column('resource_id', types.UnicodeText, ForeignKey('resource.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=True),
     Column('package_id', types.UnicodeText, ForeignKey('package.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=True),
-    Column('text', types.UnicodeText),
+    Column('text', types.UnicodeText, nullable=True),
+    Column('text_clear', types.UnicodeText, nullable=True),
     extend_existing=True
     )
 
@@ -82,8 +68,8 @@ def define_tables():
         PackageFulltext,
         package_fulltext_table,
         properties={
-            'package':relation(
-                Package,
+            'packageFulltext':relation(
+                Resource,
                 lazy=True,
                 backref='fulltext'
              )

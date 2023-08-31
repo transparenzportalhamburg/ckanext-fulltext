@@ -1,47 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import re
-
-import ckan.lib.navl.dictization_functions as df
 
 from logging import getLogger
-from pylons import config
-from pylons.i18n import _
-from genshi.input import HTML
-from genshi.filters import Transformer
-from itertools import count
-from sqlalchemy.orm import class_mapper
-
-import ckan.lib.helpers as h
-from ckan.lib.search import SearchError
-from ckan.lib.helpers import json
-from ckan.lib.base import config
-
-from ckan.logic import ValidationError
-
-from ckan import model
-from ckan.model.package import Package
 
 from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IPackageController
 from ckan.plugins import IActions
-import ckan.plugins.toolkit as toolkit
 
 from ckan.lib.helpers import json
-import ckan.logic.action.get as get
-import ckan.logic.action.create as create
-import ckan.logic.action.update as update
-
-from ckan import logic
-from ckan.logic import get_action, ValidationError
-
-from ckan.model import Session
-
-from ckanext.fulltext.model.setup_fulltext_table import PackageFulltext
-from ckan.model.package_extra import PackageExtra
-
 from ckanext.fulltext.fulltext_api import get_functions
 from ckanext.fulltext.fulltext_api import _get_fulltext
 
@@ -63,24 +30,44 @@ class InforegFulltextSearch(SingletonPlugin):
                          containing all the terms which will be sent to the indexer
         @return: modified package dict
         '''
-        
-        if pkg_dict and pkg_dict.has_key('extras_full_text_search'):
-            del pkg_dict['extras_full_text_search']
-        
-        data_dict = json.loads(pkg_dict['data_dict'])
-        fulltext = [x for x in data_dict['extras'] if 'full_text_search' in x['key']]
-        
-        if len(fulltext) > 0:
-            extras = [x for x in data_dict['extras'] if not 'full_text_search' in x['key']]
-            data_dict['extras'] = extras
-            pkg_dict['fulltext'] = fulltext[0]['value']
+        if ('type' in pkg_dict and pkg_dict['type'] == 'harvest'):
+            # not for datasets that are harvesters                                                                                                                                     
+            return pkg_dict
 
-        else:
-            fulltext_dict = _get_fulltext(pkg_dict['id'])
-            if fulltext_dict:
-                pkg_dict['fulltext'] = fulltext_dict.text
-        
-        pkg_dict['data_dict'] = json.dumps(data_dict)
+        try:
+            package_id = pkg_dict['id']
+            data_dict = json.loads(pkg_dict['data_dict'])
+            if 'resources' in data_dict:
+                fulltext = _get_fulltext(package_id, data_dict['resources'])
+
+                if fulltext is not None:
+                    pkg_dict['res_fulltext'] = [ft['text'] for ft in fulltext]
+                    pkg_dict['res_fulltext_clear'] = [ft.get('text_clear', '') for ft in fulltext]
+            
+                for res in data_dict['resources']:
+                    if 'fulltext' in res:
+                        del res['fulltext']
+                    if 'fulltext_clear' in res:
+                        del res['fulltext_clear']
+                pkg_dict['data_dict'] = json.dumps(data_dict)
+                # temporary set old fashioned(!) fulltext to empty str
+                pkg_dict['fulltext'] = ''
+                pkg_dict['fulltext_clear'] = ''
+        except Exception as e:
+            # todo log error
+            log.error('error setting resource fulltext for package %s, error: %s' % (package_id, str(e)))
+
+        try:
+            if 'validated_data_dict' in pkg_dict:
+                validated_data_dict = json.loads(pkg_dict['validated_data_dict'])
+                for res in validated_data_dict['resources']:
+                    if 'fulltext' in res:
+                        del res['fulltext']
+                    if 'fulltext_clear' in res:
+                        del res['fulltext_clear']
+                pkg_dict['validated_data_dict'] = json.dumps(validated_data_dict)
+        except:
+            log.error('error removing resource fulltext from package validated data dict %s, error: %s' % (package_id, str(e)))
 
         return pkg_dict
 

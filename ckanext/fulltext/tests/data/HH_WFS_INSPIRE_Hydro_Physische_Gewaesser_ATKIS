@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://inspire.ec.europa.eu/schemas/hy-p/4.0 https://geodienste.hamburg.de/HH_WFS_INSPIRE_Hydro_Physische_Gewaesser_ATKIS?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=hy-p:Wetland&amp;NAMESPACES=xmlns(hy-p,http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-p%2F4.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2022-04-15T17:18:50Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="unknown" numberReturned="0">
+  <!--NOTE: numberReturned attribute should be 'unknown' as well, but this would not validate against the current version of the WFS 2.0 schema (change upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925.-->
+  <wfs:member>
+    <hy-p:Wetland xmlns:hy-p="http://inspire.ec.europa.eu/schemas/hy-p/4.0" gml:id="Wetland_DEHHATKA1DN0003C_1">
+      <gml:identifier codeSpace="http://inspire.ec.europa.eu/ids">https://registry.gdi-de.org/id/de.hh/fc988d9f-fd1b-4cda-b661-f68c867b2e7d/Wetland_DEHHATKA1DN0003C_1</gml:identifier>
+      <hy-p:geographicalName>
+        <gn:GeographicalName xmlns:gn="http://inspire.ec.europa.eu/schemas/gn/4.0">
+          <gn:language>deu</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+          <gn:sourceOfName>Basis-DLM</gn:sourceOfName>
+          <gn:pronunciation nilReason="other:unpopulated" xsi:nil="true"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Neuwerker Watt</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </hy-p:geographicalName>
+      <hy-p:inspireId>
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3">
+          <base:localId>Wetland_DEHHATKA1DN0003C_1</base:localId>
+          <base:namespace>https://registry.gdi-de.org/id/de.hh/fc988d9f-fd1b-4cda-b661-f68c867b2e7d</base:namespace>
+        </base:Identifier>
+      </hy-p:inspireId>
+      <hy-p:geometry>
+        <!--Inlined geometry 'GEOMETRY_f78b1944-1288-48cb-b189-6cd017d0e11d'-->
+        <gml:Polygon gml:id="GEOMETRY_f78b1944-1288-48cb-b189-6cd017d0e11d" srsName="urn:ogc:def:crs:EPSG::25832">
+          <gml:exterior>
+            <gml:Ring>
+              <gml:curveMember>
+                <gml:LineString gml:id="GEOMETRY_2d8c7c3c-4db6-4230-99b8-7c462d057982" srsName="urn:ogc:def:crs:EPSG::25832">
+                  <gml:posList>466844.266 5973979.521 466790.867 5973988.422 466787.668 5973969.590 466820.569 5973963.969 466823.388 5973963.342 466826.519 5973962.403 466829.650 5973957.080 466829.650 5973954.888 466828.142 5973953.307 466840.334 5973949.370 466844.266 5973979.521</gml:posList>
+                </gml:LineString>
+              </gml:curveMember>
+            </gml:Ring>
+          </gml:exterior>
+        </gml:Polygon>
+      </hy-p:geometry>
+      <hy-p:localType xlink:href="Watt"/>
+      <hy-p:tidal>true</hy-p:tidal>
+      <hy-p:beginLifespanVersion>2020-09-18T09:35:29Z</hy-p:beginLifespanVersion>
+    </hy-p:Wetland>
+  </wfs:member>
+</wfs:FeatureCollection>

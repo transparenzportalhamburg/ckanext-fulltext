@@ -11,6 +11,10 @@ development.ini
 *.swp
 *~
 node_modules
+.vscode
+.noseids
+.pytest_cache
+cov.xml
 
 
 

@@ -1,45 +1,19 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
+import copy
 import re
 
-import ckan.lib.navl.dictization_functions as df
-
-from logging import getLogger
-from pylons import config
-from pylons.i18n import _
-from genshi.input import HTML
-from genshi.filters import Transformer
-from itertools import count
-from sqlalchemy.orm import class_mapper
-
-import ckan.lib.helpers as h
-from ckan.lib.search import SearchError
-from ckan.lib.helpers import json
-from ckan.lib.base import config
-
-from ckan.logic import ValidationError
-
-from ckan import model
-from ckan.model.package import Package
-
-from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IPackageController
-from ckan.plugins import IActions
 import ckan.plugins.toolkit as toolkit
-
-from ckan.lib.helpers import json
 import ckan.logic.action.get as get
 import ckan.logic.action.create as create
 import ckan.logic.action.update as update
 
+
+from logging import getLogger
+from ckan.lib.helpers import json
 from ckan.model import Session
 from ckanext.fulltext.model.setup_fulltext_table import PackageFulltext
-from ckan.model.package_extra import PackageExtra
-
 from ckanext.fulltext.model.setup_fulltext_table import setup
 
-from hmbtg_config import getConfValue
+from .hmbtg_config import getConfValue #TODO: TO CHANGE ... Maybe
 
 
 log = getLogger(__name__)
@@ -65,7 +39,6 @@ def get_functions():
             'package_create_rest': package_create_rest_minimal,
             'package_update': package_update_minimal,
             'package_update_rest': package_update_rest_minimal,
-            'fulltext_delete': fulltext_delete
     }
 
 
@@ -77,12 +50,12 @@ def _init_hide_fields():
     global hide_main_fields
     try:
         hide_extras_fields = getConfValue('hide.extras.fields').split()
-    except Exception, e:
+    except Exception as e:
         hide_extras_fields = []    
     
     try:
         hide_main_fields = getConfValue('hide.main.fields').split()
-    except Exception, e:
+    except Exception as e:
         hide_main_fields = []    
         
     
@@ -90,12 +63,12 @@ def _init_hide_fields():
 def check_logged_in(context):
     ''' Check if user is logged in.
     (Users must be logged-in to view all metadata fields.)
-    '''
+   '''
     model = context['model']
     try:
         user = context['user']
         userobj = model.User.get(user)
-    except Exception, e:
+    except Exception as e:
 
         # for internal commands like reindex use the whole api (including filtered fields)
         if context['ignore_auth']:
@@ -116,14 +89,14 @@ def _del_extra_field_from_list(data_dict, delete_field=None):
     @param delete_field: name of field which will be removed
                          (deletes hide_extras_fields if None) 
     '''
-    if delete_field in data_dict['extras'].keys():
+    if delete_field in list(data_dict['extras'].keys()):
             del data_dict['extras'][delete_field]
             return data_dict
     
     _init_hide_fields()     
     delete_key = []
     for field in hide_extras_fields:
-        if field in data_dict['extras'].keys():
+        if field in list(data_dict['extras'].keys()):
             delete_key.append(field)
      
     for key in delete_key:       
@@ -182,8 +155,8 @@ def _get_extras_dict(extras):
     extras_as_dict = []
     
     if isinstance(extras, dict):
-        for key, value in extras.iteritems():
-            if isinstance(value, (basestring, Number)):
+        for key, value in extras.items():
+            if isinstance(value, (str, Number)):
                 extras_as_dict.append({'key': key, 'value': value})
             else:
                 extras_as_dict.append({'key': key, 'value': json.dumps(value, ensure_ascii=False)})
@@ -191,18 +164,83 @@ def _get_extras_dict(extras):
     return extras
 
 
-def _get_fulltext(package_id):
+def _set_fulltext_in_resources(resources, fulltext):
+    ''' gets package dictionary and a list of fulltexts, and adds each fulltext to resource fulltext item '''
+    if resources and fulltext and len(fulltext) > 0:
+        for i, res in enumerate(resources):
+            res['fulltext'] = fulltext[i]['text']
+            res['fulltext_clear'] = fulltext[i]['text_clear']
+
+
+def _remove_fulltext_from_resources(resources):
+    if resources:
+        for res in resources:
+            if 'fulltext' in res:
+                del res['fulltext']
+            if 'fulltext_clear' in res:
+                del res['fulltext_clear']
+
+
+def _get_fulltext_impl(package_id, resources, format_blacklist=[], limit=0, package_blacklist=[]):
     '''Returns the fulltext of a package.
     
     @param package_id: id of the package
     '''
-    setup()
+    if not resources:
+        return None
+    if package_id in package_blacklist:
+        return None
+
     if package_id:
-        fulltext = Session.query(PackageFulltext) \
-                            .filter(PackageFulltext.package_id==package_id) \
-                            .first()
+        setup()
+
+        res_ids = [res['id'] for res in resources]
+        ids_to_fetch = ["'" + r['id'] + "'" for r in resources \
+            if r.get('format','').lower() not in format_blacklist]
+        fulltext = {}
+        if ids_to_fetch:
+        
+            ids_to_fetch = ",".join(ids_to_fetch)
+
+            if limit > 0:
+                query = "SELECT resource_id, LEFT(text,%d), LEFT(text_clear, %d) as text FROM \"resource_fulltext\" WHERE package_id = '%s' and resource_id in (%s);" % (limit, limit, package_id, ids_to_fetch)
+            else:
+                query = "SELECT resource_id, text, text_clear as text FROM \"resource_fulltext\" WHERE package_id = '%s' and resource_id in (%s);" % (package_id, ids_to_fetch)
+            ret = Session.execute(query)
+
+            fulltext = {ft[0]: {'text': ft[1], 'text_clear': ft[2]} for ft in ret.fetchall()}
+        # fulltext = {ft.resource_id: {'text': ft.text, 'text_clear': ft.text_clear} for ft in fulltext}
+
+        empty_template = {'text': '', 'text_clear': ''}
+        fulltext = [fulltext.get(id, empty_template) for id in res_ids]
+        
+        # print([r['id'] for r in resources])
         return fulltext
     return None
+
+try:
+    format_blacklist = getConfValue('fulltext.format_blacklist').split()
+except:
+    format_blacklist = []
+try:
+    limit = int(getConfValue('fulltext.maxchars_from_db'))
+except ValueError:
+    limit = 0
+try:
+    package_blacklist = getConfValue('fulltext.packageid_blacklist').split()
+except:
+    package_blacklist = []
+_get_fulltext = lambda pid, resources: _get_fulltext_impl(pid, resources, format_blacklist, limit, package_blacklist)
+
+
+FULLTEXT_UNAVAILABLE = 'NOT_AVAILABLE'
+
+
+def _set_empty_ft_unavailable(fulltexts):
+    for i in range(len(fulltexts)):
+        if fulltexts[i].strip() == "":
+            fulltexts[i] = FULLTEXT_UNAVAILABLE
+    return
 
 
 def fulltext_dict_save(fulltext_dict, old_fulltext, pkg, context):
@@ -212,49 +250,87 @@ def fulltext_dict_save(fulltext_dict, old_fulltext, pkg, context):
     @param old_fulltext: fulltext entity which will be deleted
     @param pkg: package dict
     '''
-    if fulltext_dict is None:
-        return
     
+    _set_empty_ft_unavailable(fulltext_dict)
+
     model = context["model"]
     session = context["session"]
     id = pkg['id']
 
     #deleted
     if pkg['state'] == 'deleted' and old_fulltext:
+        log.debug('package deleted, deleting fulltexts from resources, package id: %s ' % pkg['id'])
         from ckan import model
-        model.Session.delete(old_fulltext)
+        for ft in old_fulltext:
+            model.Session.delete(ft)
         try:
             model.repo.commit_and_remove()
-            log.info(u'Purged fulltext row with package id {}'.format(pkg['id']))
-        except IntegrityError,e:
-            log.error(u'An integrity error while purging (package id {})'.format(pkg['id']))
+            log.info('Purged fulltext row with package id {}'.format(pkg['id']))
+        except Exception:
+            log.error('An integrity error while purging (package id {})'.format(pkg['id']))
 
     #new   
     elif not old_fulltext and fulltext_dict:
+        log.debug('new package, creating fulltexts for resources, package id: %s ' % pkg['id'])
         state = 'pending' if context.get('pending') else 'active'
-        fulltext = PackageFulltext()
-        fulltext.package_id=id
-        fulltext.text=fulltext_dict
-        fulltext.save()
-        model.Session.flush()
+        for i, res in enumerate(pkg['resources']):
+            fulltext = PackageFulltext()
+            fulltext.package_id = id
+            fulltext.resource_id = res['id']
+            fulltext.text = fulltext_dict[i]
+            fulltext.save()
+        #model.Session.flush()
+        #model.Session.close()
+        #session.flush()
+        log.debug('%s new resources added' % len(pkg['resources']))
         
     #modfied
-    elif old_fulltext != fulltext_dict:
+    elif old_fulltext and fulltext_dict:
+        log.debug('package updated, updating fulltexts for resources, package id: %s ' % pkg['id'])
         state = 'pending' if context.get('pending') else 'active'
-        old_fulltext.text = fulltext_dict
-        old_fulltext.save()
-        model.Session.commit()
-        model.Session.flush()
+        package_resources = copy.copy(pkg['resources'])
+        # if ft is in old and not in new: delete
+        # if ft is in new nad not in old: new
+        # if ft is in old and new: update
+        for ft in old_fulltext:
+            fulltext_index = [i for i, v in enumerate(package_resources) if v['id'] == ft.resource_id]
+            if len(fulltext_index) > 0:
+                log.debug('fulltext already exists, updating the text')
+                ft_obj = session.query(PackageFulltext).filter(PackageFulltext.resource_id == ft.resource_id).first()
+                ft_obj.text = fulltext_dict[fulltext_index[0]]
+                ft_obj.text_clear = None
+            else:
+                # ft in old_fulltext is deleted?
+                log.debug('resource does not exist in update, should be deleted! resource id: %s' % ft.resource_id)
+                session.delete(ft)
+                
+        new_counter = 0
+        for i, res in enumerate(package_resources):
+            fulltext_exist = any([ft.resource_id == res['id'] for ft in old_fulltext])
+            if not fulltext_exist:
+                new_counter += 1
+                fulltext = PackageFulltext()
+                fulltext.package_id = id
+                fulltext.resource_id = res['id']
+                fulltext.text = fulltext_dict[i]
+                fulltext.save()
+
+        log.debug('%s new resources added in update' % new_counter)
+        #model.Session.commit()
+        #model.Session.flush()
+        #model.Session.close()
+        #session.commit()
 
     
 @toolkit.side_effect_free
 def package_show_rest_minimal(context, data_dict):
     package = get.package_show_rest(context, data_dict)
     
-    if check_logged_in(context):       
-        fulltext = _get_fulltext(package['id'])
-        if fulltext:
-            package['extras']['full_text_search'] = fulltext.text 
+    if check_logged_in(context):
+        if 'resources' in package:
+            fulltext = _get_fulltext(package['id'], package['resources'])
+            if fulltext:
+                _set_fulltext_in_resources(package['resources'], fulltext)
         return package
     
     minimal_package =  _del_extra_field_from_list(package)
@@ -277,20 +353,30 @@ def package_show_minimal(context, data_dict):
 
     '''
     package = get.package_show(context, data_dict)
-    
+
     if check_logged_in(context):
-        fulltext = _get_fulltext(package['id'])
-        if fulltext:
-            fulltext_dict = { 'key': 'full_text_search',
-                              'value': fulltext.text
-                            }
-            package['extras'].append(fulltext_dict) 
+        if 'resources' in package:
+            fulltext = _get_fulltext(package['id'], package['resources'])
+            if fulltext:
+                _set_fulltext_in_resources(package['resources'], fulltext)
+                _checkDataTypesInExtras(package['extras'],'key')
         return package
-    
     minimal_package =  _del_extra_field_from_dict(package)
     minimal_package = _del_main_field_from_dict(minimal_package)
+    return fix_https_in_resources(minimal_package)
+
+def fix_https_in_resources(minimal_package):
+    for resource_dict in minimal_package.get('resources', []):
+        url = resource_dict.get('url')
+        if url:
+            resource_dict['url']= url.replace('http://daten.transparenz.hamburg.de', 'https://daten.transparenz.hamburg.de')
     return minimal_package
 
+
+def _checkDataTypesInExtras(extras,key):
+    # temporal_granularity_factor move to number TODO
+    return extras
+    
 
 @toolkit.side_effect_free
 def package_search_minimal(context, data_dict):
@@ -397,21 +483,21 @@ def package_search_minimal(context, data_dict):
         query cannot be changed.  CKAN always returns the matched datasets as
         dictionary objects.
     '''
+    
     result_dict = get.package_search(context, data_dict)
     
     if check_logged_in(context):
         for result in result_dict['results']:
-            fulltext = _get_fulltext(result['id'])
-            if fulltext:
-                fulltext_dict = { 'key': 'full_text_search',
-                                  'value': fulltext.text
-                                }
-                result['extras'].append(fulltext_dict) 
+            if 'resources' in result:
+                fulltext = _get_fulltext(result['id'], result['resources'])
+                if fulltext:
+                    _set_fulltext_in_resources(result['resources'], fulltext)
         return result_dict
     new_packages = []
     for result in result_dict['results']:
         new_package = _del_extra_field_from_dict(result)
         new_package = _del_main_field_from_dict(new_package)
+        new_package = fix_https_in_resources(new_package)
         new_packages.append(new_package)
     result_dict['results'] = new_packages
     
@@ -433,21 +519,20 @@ def user_show_minimal(context, data_dict):
 
     '''
     result_dict = get.user_show(context, data_dict)
-    if check_logged_in(context):
+    if 'datasets' in result_dict:
+        if check_logged_in(context):
+            for result in result_dict['datasets']:
+                if 'resources' in result:
+                    fulltext = _get_fulltext(result['id'], result['resources'])
+                    if fulltext:
+                        _set_fulltext_in_resources(result['resources'], fulltext)
+            return result_dict
+        new_packages = []
         for result in result_dict['datasets']:
-            fulltext = _get_fulltext(result['id'])
-            if fulltext:
-                fulltext_dict = { 'key': 'full_text_search',
-                                  'value': fulltext.text
-                                }
-                result['extras'].append(fulltext_dict) 
-        return result_dict
-    new_packages = []
-    for result in result_dict['datasets']:
-        new_package = _del_extra_field_from_dict(result)
-        new_package = _del_main_field_from_dict(new_package)
-        new_packages.append(new_package)
-    result_dict['datasets'] = new_packages
+            new_package = _del_extra_field_from_dict(result)
+            new_package = _del_main_field_from_dict(new_package)
+            new_packages.append(new_package)
+        result_dict['datasets'] = new_packages
     return result_dict
 
     
@@ -475,12 +560,10 @@ def current_package_list_with_resources_minimal(context, data_dict):
     
     if check_logged_in(context):
         for result in results:
-            fulltext = _get_fulltext(result['id'])
-            if fulltext:
-                fulltext_dict = { 'key': 'full_text_search',
-                                  'value': fulltext.text
-                                }
-                result['extras'].append(fulltext_dict)  
+            if 'resources' in result:
+                fulltext = _get_fulltext(result['id'], result['resources'])
+                if fulltext:
+                    _set_fulltext_in_resources(result['resources'], fulltext)
         return results
     
     new_packages = []
@@ -580,19 +663,22 @@ def package_create_minimal(context, data_dict):
     package= ''
     fulltext = ''
     old_fulltext = ''
- 
-    if data_dict.has_key('extras'):
-        contains = _contains_key(data_dict['extras'], 'full_text_search')
+
+    if 'resources' in data_dict:
+        # at least one of the fulltexts contains text
+        #contains = any(res.has_key('fulltext') for res in data_dict['resources'])
+        contains = True
         if(contains): 
-            fulltext = contains
-            data_dict = _del_extra_field_from_dict(data_dict, 'full_text_search')
+            fulltext = [res.get('fulltext', '') for res in data_dict['resources']]
+            _remove_fulltext_from_resources(data_dict['resources'])
             package = create.package_create(context, data_dict)
             old_fulltext = None
-            
-            if package.has_key('id'):
+            if 'id' in package:
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
-                                    .first()
+                                    .all()
+                if old_fulltext is not None and len(old_fulltext) == 0:
+                    old_fulltext = None
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
             package = create.package_create(context, data_dict)
@@ -601,15 +687,8 @@ def package_create_minimal(context, data_dict):
       
     if check_logged_in(context):
         if fulltext:
-            # why fulltext.text? Left it for compatibility
-            if isinstance(fulltext,unicode): 
-                valueFulltext = fulltext
-            else:
-                valueFulltext = fulltext.text
-            fulltext_dict = { 'key': 'full_text_search',
-                              'value': valueFulltext
-                            }
-            package['extras'].append(fulltext_dict) 
+            for i, res in enumerate(package['resources']):
+                res['fulltext'] = fulltext[i]
         return package
     
     minimal_package = _del_extra_field_from_dict(package)
@@ -625,30 +704,34 @@ def package_create_rest_minimal(context, data_dict):
     old_fulltext = ''
     categories = []
 
-    if all(isinstance(n, basestring) for n in data_dict['groups']):
+    if all(isinstance(n, str) for n in data_dict['groups']):
         groups = data_dict['groups']
         for g in groups:
              categories.append({'name': g})
         data_dict['groups']= categories
         
-    if all(isinstance(n, basestring) for n in data_dict['tags']):
+    if all(isinstance(n, str) for n in data_dict['tags']):
         tags = []
         for tag in data_dict['tags']:
             tags.append({'name': tag})
         
         data_dict['tags'] = tags
 
-    if data_dict.has_key('extras'):
-        if 'full_text_search' in data_dict['extras'].keys():
-            fulltext = data_dict['extras']['full_text_search']
-            data_dict = _del_extra_field_from_list(data_dict, 'full_text_search')
-            data_dict['extras'] = _get_extras_dict(data_dict['extras'])
+    if 'resources' in data_dict:
+        # at least one of the fulltexts contains text
+        #contains = any(res.has_key('fulltext') for res in data_dict['resources'])
+        contains = True
+        if(contains): 
+            fulltext = [res.get('fulltext', '') for res in data_dict['resources']]
+            _remove_fulltext_from_resources(data_dict['resources'])
             package = create.package_create(context, data_dict)
             old_fulltext = None
-            if package.has_key('id'):
+            if 'id' in package:
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
-                                    .first()
+                                    .all()
+                if old_fulltext is not None and len(old_fulltext) == 0:
+                    old_fulltext = None
 
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
@@ -660,9 +743,9 @@ def package_create_rest_minimal(context, data_dict):
         package = create.package_create(context, data_dict)
 
     if check_logged_in(context):
-        fulltext = _get_fulltext(package['id'])
         if fulltext:
-            package['extras']['full_text_search'] = fulltext.text 
+            for i, res in enumerate(package['resources']):
+                res['fulltext'] = fulltext[i]
         return package
     
     minimal_package = _del_extra_field_from_list(package)
@@ -701,18 +784,23 @@ def package_update_minimal(context, data_dict):
     package= ''
     fulltext = ''
     old_fulltext = ''
-    if data_dict.has_key('extras'):
-        contains = _contains_key(data_dict['extras'], 'full_text_search')
+    if 'resources' in data_dict:
+        # at least one of the fulltexts contains text
+        #contains = any(res.has_key('fulltext') for res in data_dict['resources'])
+        contains = True
         if(contains): 
-            fulltext = contains
-            data_dict = _del_extra_field_from_dict(data_dict, 'full_text_search')
-        
+            fulltext = [res.get('fulltext', '') for res in data_dict['resources']]
+            _remove_fulltext_from_resources(data_dict['resources'])
+            assert not any('fulltext' in res for res in data_dict['resources']), 'mehran, fulltext in resource exist'
+            assert 'full_text_search' not in data_dict, 'mehran, full_text_search exists'
             package = update.package_update(context, data_dict)
             old_fulltext = None
-            if package.has_key('id'):
+            if 'id' in package:
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
-                                    .first()
+                                    .all()
+                if old_fulltext is not None and len(old_fulltext) == 0:
+                    old_fulltext = None
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
             package = update.package_update(context, data_dict)
@@ -720,14 +808,10 @@ def package_update_minimal(context, data_dict):
         package = update.package_update(context, data_dict)
 
     if check_logged_in(context):
-        fulltext = _get_fulltext(package['id'])
         if fulltext:
-            fulltext_dict = { 'key': 'full_text_search',
-                              'value': fulltext.text
-                            }
-            package['extras'].append(fulltext_dict) 
+            for i, res in enumerate(package['resources']):
+                res['fulltext'] = fulltext[i]
         return package
-    
     minimal_package = _del_extra_field_from_dict(package)
     minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
@@ -739,52 +823,34 @@ def package_update_rest_minimal(context, data_dict):
     package= ''
     fulltext = ''
     old_fulltext = ''
-    if data_dict.has_key('extras'):
-        if 'full_text_search' in data_dict['extras'].keys():
-            fulltext = data_dict['extras']['full_text_search']
-            data_dict = _del_extra_field_from_list(data_dict, 'full_text_search')
+    if 'resources' in data_dict:
+        # at least one of the fulltexts contains text
+        #contains = any(res.has_key('fulltext') for res in data_dict['resources'])
+        contains = True
+        if(contains): 
+            fulltext = [res.get('fulltext', '') for res in data_dict['resources']]
+            _remove_fulltext_from_resources(data_dict['resources'])
             package = update.package_update_rest(context, data_dict)
             old_fulltext = None
-            
-            if package.has_key('id'):
+            if 'id' in package:
                 old_fulltext = Session.query(PackageFulltext) \
                                     .filter(PackageFulltext.package_id==package['id']) \
-                                    .first()
+                                    .all()
+                if old_fulltext is not None and len(old_fulltext) == 0:
+                    old_fulltext = None
             fulltext_dict_save(fulltext, old_fulltext, package, context)
         else:
-            package = update.package_update(context, data_dict)
+            package = update.package_update_rest(context, data_dict)
     else:
         package = update.package_update_rest(context, data_dict)
 
     if check_logged_in(context):
-        fulltext = _get_fulltext(package['id'])
         if fulltext:
-            package['extras']['full_text_search'] = fulltext.text 
+            for i, res in enumerate(package['resources']):
+                res['fulltext'] = fulltext[i]
         return package
-    
     minimal_package = _del_extra_field_from_list(package)
     minimal_package = _del_main_field_from_dict(minimal_package)
     return minimal_package
-
-
-def fulltext_delete(context, data_dict):  
-    '''Deletes Fulltext.
-    
-    @param data_dict: dict containig the id of the package
-    '''
-    setup()
-   
-    old_fulltext = ''
-    if data_dict.has_key('id'):
-        old_fulltext = Session.query(PackageFulltext) \
-                            .filter(PackageFulltext.package_id==package['id']) \
-                            .first()
-
-        fulltext_dict_save(None, old_fulltext, data_dict, context)    
-    return true
-    
-
-
-
 
 
